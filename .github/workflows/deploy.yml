@@ -33,9 +33,15 @@ jobs:
             echo "Actualizando código"
             git pull origin main
 
-            echo "Instalando dependencias y build producción"
+            echo "Desactivando analytics Angular (evita bloqueo en CI)"
+            export NG_CLI_ANALYTICS=false
+            npx ng analytics off || true
+
+            echo "Instalando dependencias (build)"
             npm ci
-            npm run build
+
+            echo "Build producción SSR"
+            npm run build -- --configuration production
 
             DIST="$REPO/dist/crunchypaws-ecommerce-admin-frontend"
 
@@ -44,23 +50,27 @@ jobs:
               exit 1
             fi
 
-            echo "Publicando en $APP"
+            echo "Backup .env"
             if [ -f "$APP/.env" ]; then
               sudo cp "$APP/.env" /tmp/crunchypaws-admin-frontend-env-backup
             fi
 
+            echo "Preparando carpeta destino"
             sudo mkdir -p "$APP"
             cd "$APP"
+
             sudo find . -mindepth 1 -maxdepth 1 \
               ! -name '.env' \
               ! -name 'node_modules' \
               -exec rm -rf {} + || true
 
+            echo "Copiando build"
             cd "$REPO"
             sudo cp -R "$DIST/." "$APP/"
             sudo cp package.json "$APP/"
             sudo cp package-lock.json "$APP/"
 
+            echo "Restaurando .env"
             if [ -f /tmp/crunchypaws-admin-frontend-env-backup ]; then
               sudo mv /tmp/crunchypaws-admin-frontend-env-backup "$APP/.env"
               sudo chmod 600 "$APP/.env"
@@ -68,20 +78,21 @@ jobs:
 
             sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} "$APP"
 
-            echo "Dependencias de runtime (SSR)"
+            echo "Instalando dependencias runtime (SSR)"
             cd "$APP"
             npm ci --omit=dev
 
             PORT="${PORT:-4201}"
             export PORT
-            echo "SSR en puerto $PORT (nginx debería hacer proxy a este puerto; define PORT en el servidor si no usamos 4201)"
 
-            cd "$APP"
+            echo "Levantando SSR en puerto $PORT"
+
             if pm2 describe crunchypaws-ecommerce-admin-frontend > /dev/null 2>&1; then
               pm2 restart crunchypaws-ecommerce-admin-frontend --update-env
             else
               pm2 start server/server.mjs --name crunchypaws-ecommerce-admin-frontend --cwd "$APP"
             fi
+
             pm2 save
 
             echo "Despliegue completado"

@@ -30,8 +30,10 @@ jobs:
 
             git config --global --add safe.directory "$REPO"
 
-            echo "Actualizando código"
-            git pull origin main
+            echo "Forzando sincronización con repo remoto"
+            git fetch origin
+            git reset --hard origin/main
+            git clean -fd
 
             echo "Desactivando analytics Angular"
             export NG_CLI_ANALYTICS=false

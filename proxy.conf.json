@@ -2,10 +2,7 @@
   "/api": {
     "target": "http://localhost:4001",
     "secure": false,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/api": ""
-    }
+    "changeOrigin": true
   },
   "/tiendasgt-direcciones": {
     "target": "http://localhost:4010",

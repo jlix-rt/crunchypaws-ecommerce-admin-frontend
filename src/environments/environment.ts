@@ -1,12 +1,11 @@
 /**
- * Desarrollo con `ng serve`: usa `/api` y proxy.conf.json → http://localhost:4001
- * (equivalente a base `http://localhost:4001/api` si el API publica bajo /api).
+ * Desarrollo: `apiUrl` = origen + `/api`; con `ng serve` puedes usar `http://localhost:4201/api` y proxy → 4001.
  */
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:4001',
-  /** API tiendasgt-direcciones (proxy dev: /tiendasgt-direcciones). Producción: URL absoluta. */
-  direccionesApiUrl: 'http://localhost:4011',
+  apiUrl: 'http://localhost:4001/api',
+  /** tiendasgt-direcciones: base con `/api` (proxy `/tiendasgt-direcciones` → 4010). */
+  direccionesApiUrl: 'http://localhost:4010/api',
   /** Header x-admin-key si el servicio define ADMIN_API_KEY. */
   direccionesAdminKey: '1234567890',
   /**

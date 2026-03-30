@@ -1,0 +1,87 @@
+name: Deploy admin frontend (Angular SSR)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          request_pty: true
+          timeout: 30s
+          command_timeout: 20m
+          script: |
+            set -e
+
+            REPO="${{ secrets.VPS_PATH }}"
+            APP="${{ secrets.VPS_APP_PATH }}"
+
+            echo "Entrando al repo"
+            cd "$REPO"
+
+            git config --global --add safe.directory "$REPO"
+
+            echo "Actualizando código"
+            git pull origin main
+
+            echo "Instalando dependencias y build producción"
+            npm ci
+            npm run build
+
+            DIST="$REPO/dist/crunchypaws-ecommerce-admin-frontend"
+
+            if [ ! -d "$DIST/server" ] || [ ! -d "$DIST/browser" ]; then
+              echo "Error: no existe la salida SSR en $DIST"
+              exit 1
+            fi
+
+            echo "Publicando en $APP"
+            if [ -f "$APP/.env" ]; then
+              sudo cp "$APP/.env" /tmp/crunchypaws-admin-frontend-env-backup
+            fi
+
+            sudo mkdir -p "$APP"
+            cd "$APP"
+            sudo find . -mindepth 1 -maxdepth 1 \
+              ! -name '.env' \
+              ! -name 'node_modules' \
+              -exec rm -rf {} + || true
+
+            cd "$REPO"
+            sudo cp -R "$DIST/." "$APP/"
+            sudo cp package.json "$APP/"
+            sudo cp package-lock.json "$APP/"
+
+            if [ -f /tmp/crunchypaws-admin-frontend-env-backup ]; then
+              sudo mv /tmp/crunchypaws-admin-frontend-env-backup "$APP/.env"
+              sudo chmod 600 "$APP/.env"
+            fi
+
+            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} "$APP"
+
+            echo "Dependencias de runtime (SSR)"
+            cd "$APP"
+            npm ci --omit=dev
+
+            PORT="${PORT:-4201}"
+            export PORT
+            echo "SSR en puerto $PORT (nginx debería hacer proxy a este puerto; define PORT en el servidor si no usamos 4201)"
+
+            cd "$APP"
+            if pm2 describe crunchypaws-ecommerce-admin-frontend > /dev/null 2>&1; then
+              pm2 restart crunchypaws-ecommerce-admin-frontend --update-env
+            else
+              pm2 start server/server.mjs --name crunchypaws-ecommerce-admin-frontend --cwd "$APP"
+            fi
+            pm2 save
+
+            echo "Despliegue completado"

@@ -1,3 +1,9 @@
+/**
+ * Producción: apiUrl suele ser `/api` si nginx hace proxy al admin-backend (puerto 4001).
+ * direccionesApiUrl: path o URL del servicio tiendasgt-direcciones.
+ * publicAppUrl: URL pública HTTPS del panel (emails de verificación / ADMIN_*_URL en el backend).
+ * direccionesAdminKey: debe coincidir con la clave del servicio de direcciones en producción.
+ */
 export const environment = {
   production: true,
   apiUrl: '/api',

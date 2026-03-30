@@ -1,0 +1,206 @@
+<div class="products" data-testid="products-page">
+  <h1>Productos</h1>
+  @if (err()) {
+    <div class="products__error" data-testid="products-error">{{ err() }}</div>
+  }
+
+  <section class="products__panel products__panel--compact" data-testid="products-bulk-actions">
+    <h2>Acciones</h2>
+    <div class="products__bulk">
+      <label class="products__check">
+        <input type="checkbox" [checked]="allSelected()" (change)="toggleSelectAll(($any($event.target)).checked)" />
+        Seleccionar todo ({{ selectedIds().size }}/{{ products().length }})
+      </label>
+      <button
+        type="button"
+        class="products__btn products__btn--danger"
+        [disabled]="selectedIds().size === 0 || deletingSelected()"
+        (click)="deleteSelected()"
+        data-testid="products-delete-selected"
+      >
+        Eliminar seleccionados
+      </button>
+      <button
+        type="button"
+        class="products__btn products__btn--ghost"
+        [disabled]="selectedIds().size === 0 || deletingSelected()"
+        (click)="clearSelection()"
+      >
+        Limpiar selección
+      </button>
+    </div>
+  </section>
+
+  <section class="products__panel" data-testid="products-create-panel">
+    <h2>Nuevo producto</h2>
+    <div class="products__form">
+      <input type="text" [(ngModel)]="newName" placeholder="Nombre" data-testid="products-new-name" />
+      <textarea
+        [(ngModel)]="newDesc"
+        placeholder="Descripción"
+        rows="2"
+        data-testid="products-new-desc"
+      ></textarea>
+      <input type="number" [(ngModel)]="newPrice" placeholder="Precio" data-testid="products-new-price" />
+      <label class="products__check">
+        <input type="checkbox" [(ngModel)]="newTracksStock" data-testid="products-new-tracks-stock" />
+        Gestiona stock (inventario)
+      </label>
+      <input
+        type="number"
+        [(ngModel)]="newStock"
+        placeholder="Stock"
+        data-testid="products-new-stock"
+        [disabled]="!newTracksStock"
+        [title]="!newTracksStock ? 'Sin control de inventario' : ''"
+      />
+      <input type="text" [(ngModel)]="newSku" placeholder="SKU (opcional)" data-testid="products-new-sku" />
+      <label class="products__check">
+        <input type="checkbox" [(ngModel)]="newIsVisible" />
+        Visible en tienda
+      </label>
+      <select [(ngModel)]="newCategoryId" data-testid="products-new-category">
+        <option value="">— Categoría —</option>
+        @for (c of flatCats(tree()); track c.id) {
+          <option [value]="c.id">{{ c.label }}</option>
+        }
+      </select>
+      <button type="button" class="products__btn" (click)="create()" data-testid="products-create-btn">
+        Crear
+      </button>
+    </div>
+  </section>
+
+  @if (editId) {
+    <section class="products__panel" data-testid="products-edit-panel">
+      <h2>Editar</h2>
+      <div class="products__form">
+        <input type="text" [(ngModel)]="editName" data-testid="products-edit-name" />
+        <textarea [(ngModel)]="editDesc" rows="2" data-testid="products-edit-desc"></textarea>
+        <input type="number" [(ngModel)]="editPrice" data-testid="products-edit-price" />
+        <label class="products__check">
+          <input type="checkbox" [(ngModel)]="editTracksStock" data-testid="products-edit-tracks-stock" />
+          Gestiona stock (inventario)
+        </label>
+        <input
+          type="number"
+          [(ngModel)]="editStock"
+          data-testid="products-edit-stock"
+          [disabled]="!editTracksStock"
+          [title]="!editTracksStock ? 'Sin control de inventario' : ''"
+        />
+        <input type="text" [(ngModel)]="editSku" placeholder="SKU" data-testid="products-edit-sku" />
+        <label class="products__check">
+          <input type="checkbox" [(ngModel)]="editIsVisible" />
+          Visible en tienda
+        </label>
+        <select [(ngModel)]="editCategoryId" data-testid="products-edit-category">
+          @for (c of flatCats(tree()); track c.id) {
+            <option [value]="c.id">{{ c.label }}</option>
+          }
+        </select>
+        <button type="button" class="products__btn" (click)="saveEdit()" data-testid="products-edit-save">
+          Guardar
+        </button>
+        <button type="button" class="products__btn products__btn--ghost" (click)="editId = null">
+          Cancelar
+        </button>
+      </div>
+    </section>
+  }
+
+  <div class="products__table-wrap">
+    <table class="products__table" data-testid="products-table">
+      <thead>
+        <tr>
+          <th class="products__sel-col">
+            <input
+              type="checkbox"
+              [checked]="allSelected()"
+              (change)="toggleSelectAll(($any($event.target)).checked)"
+              aria-label="Seleccionar todos"
+            />
+          </th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Inventario</th>
+          <th>Visible</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of products(); track p.id) {
+          <tr [attr.data-testid]="'product-row-' + p.id">
+            <td>
+              <input
+                type="checkbox"
+                [checked]="isSelected(p.id)"
+                (change)="toggleSelected(p.id, ($any($event.target)).checked)"
+                [attr.aria-label]="'Seleccionar ' + p.name"
+              />
+            </td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.category.name }}</td>
+            <td>{{ p.price }}</td>
+            <td>{{ p.tracksStock === false ? '—' : p.stock }}</td>
+            <td>
+              <button
+                type="button"
+                class="products__pill"
+                (click)="toggleTracksStock(p)"
+                [attr.data-testid]="'product-tracks-stock-' + p.id"
+                [title]="'Clic para alternar control de inventario'"
+              >
+                {{ p.tracksStock !== false ? 'Sí' : 'No' }}
+              </button>
+            </td>
+            <td>
+              <button type="button" class="products__pill" (click)="toggleVisible(p)">
+                {{ p.isVisible ? 'Sí' : 'No' }}
+              </button>
+            </td>
+            <td class="products__actions">
+              <button
+                type="button"
+                class="products__link"
+                (click)="toggleImages(p.id)"
+                [attr.data-testid]="'product-images-toggle-' + p.id"
+              >
+                Imágenes
+              </button>
+              <button
+                type="button"
+                class="products__link"
+                (click)="startEdit(p)"
+                [attr.data-testid]="'product-edit-' + p.id"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                class="products__link products__link--danger"
+                (click)="remove(p.id)"
+                [attr.data-testid]="'product-delete-' + p.id"
+              >
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          @if (expandedId() === p.id) {
+            <tr class="products__expand">
+              <td colspan="8">
+                <app-product-image-manager
+                  [productId]="p.id"
+                  [images]="p.images || []"
+                  (imagesChanged)="loadProducts()"
+                />
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

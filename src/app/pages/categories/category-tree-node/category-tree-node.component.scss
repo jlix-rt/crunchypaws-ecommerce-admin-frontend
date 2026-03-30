@@ -1,0 +1,68 @@
+.tree-node {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree-node__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.tree-node__check {
+  width: 16px;
+  height: 16px;
+}
+
+.tree-node__name {
+  font-weight: 600;
+  min-width: 120px;
+}
+
+.tree-node__slug {
+  font-size: 0.75rem;
+  color: #666;
+  flex: 1;
+  min-width: 100px;
+}
+
+.tree-node__badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #e9f6ea;
+  color: #1e6b2a;
+  font-size: 0.75rem;
+  font-weight: 800;
+
+  &--off {
+    background: #f5e0e0;
+    color: #922;
+  }
+}
+
+.tree-node__action {
+  padding: 0.35rem 0.65rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--cp-cream, #e8e0d5);
+  color: var(--cp-brown-dark, #5c2e1a);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &--danger {
+    background: #f5e0e0;
+    color: #922;
+  }
+}
+
+.tree-node__children {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.25rem;
+  border-left: 2px solid color-mix(in srgb, var(--cp-primary, #f47c20) 35%, transparent);
+}

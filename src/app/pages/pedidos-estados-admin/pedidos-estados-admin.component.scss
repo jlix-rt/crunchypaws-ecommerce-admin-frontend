@@ -1,0 +1,95 @@
+.pe {
+  max-width: 960px;
+}
+.pe__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+.pe__lead {
+  color: #5c5c5c;
+  margin-bottom: 1.25rem;
+  line-height: 1.45;
+}
+.pe__err {
+  color: #b00020;
+  margin-bottom: 1rem;
+}
+.pe__section {
+  margin-bottom: 2rem;
+}
+.pe__h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.75rem;
+}
+.pe__h3 {
+  font-size: 1rem;
+  margin: 1rem 0 0.5rem;
+  font-weight: 600;
+}
+.pe__hint {
+  color: #5c5c5c;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin: 0 0 0.75rem;
+}
+.pe__btn--secondary {
+  background: #5c5c5c;
+}
+.pe__new {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+.pe__input {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 140px;
+}
+.pe__input--num {
+  width: 5rem;
+}
+.pe__select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.pe__btn {
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  border: none;
+  background: linear-gradient(135deg, #6b4fc9, #8b6fd4);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.pe__btn:disabled {
+  opacity: 0.5;
+}
+.pe__table-wrap {
+  overflow-x: auto;
+}
+.pe__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.pe__table th,
+.pe__table td {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 0.45rem 0.35rem;
+  text-align: left;
+}
+.pe__link {
+  background: none;
+  border: none;
+  color: #5c4bb5;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+}
+.pe__link--danger {
+  color: #b00020;
+}

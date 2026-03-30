@@ -1,0 +1,72 @@
+<div class="pa" data-testid="pedidos-admin">
+  <h1 class="pa__title">Pedidos</h1>
+  <p class="pa__lead">
+    Solo se muestran las acciones que tienen una <strong>transición</strong> definida en «Estados de pedido» para el
+    <strong>estado actual</strong> y la <strong>forma de pago</strong> del pedido (anticipado vs contra entrega). Con
+    transferencia, cada <strong>Preparar</strong> avanza un paso según ese mapa (p. ej. comprobando pago → pago recibido →
+    pedido recibido → preparando).
+  </p>
+  <p class="pa__tools">
+    Si un pedido <strong>contra entrega</strong> no muestra acciones y el estado parece de transferencia (p. ej.
+    <code>ADV_*</code>), suele ser datos antiguos: reasigna al flujo correcto.
+    <button type="button" class="pa__btn pa__btn--secondary" (click)="repairCodMisplaced()" [disabled]="repairBusy() || loading()">
+      @if (repairBusy()) {
+        Corrigiendo…
+      } @else {
+        Corregir estados contra entrega
+      }
+    </button>
+  </p>
+
+  @if (err()) {
+    <p class="pa__err">{{ err() }}</p>
+  }
+
+  @if (loading()) {
+    <p>Cargando…</p>
+  } @else if (!rows().length) {
+    <p class="pa__empty">No hay pedidos.</p>
+  } @else {
+    <div class="pa__table-wrap">
+      <table class="pa__table">
+        <thead>
+          <tr>
+            <th>Pedido</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Estado (admin)</th>
+            <th>Pago</th>
+            <th>Total Q</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of rows(); track r.id) {
+            <tr>
+              <td><strong>{{ r.orderNumber }}</strong></td>
+              <td>{{ r.createdAt | date: 'short' }}</td>
+              <td>{{ r.recipientName }}</td>
+              <td>{{ r.recipientPhone }}</td>
+              <td>{{ r.status.labelAdmin }} <span class="pa__code">({{ r.status.code }})</span></td>
+              <td>{{ r.paymentMethod === 'BANK_TRANSFER' ? 'Transferencia' : 'Contra entrega' }}</td>
+              <td>{{ totalNum(r) | number: '1.2-2' }}</td>
+              <td class="pa__actions">
+                @for (a of actionsForRow(r); track a.id) {
+                  <button
+                    type="button"
+                    class="pa__btn"
+                    [disabled]="busy() === r.id"
+                    (click)="doAction(r, a.id)"
+                  >
+                    {{ a.label }}
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

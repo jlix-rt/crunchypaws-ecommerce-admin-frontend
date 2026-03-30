@@ -1,0 +1,63 @@
+<div class="imgmgr" [attr.data-testid]="'product-images-' + productId()">
+  @if (err()) {
+    <div class="imgmgr__error" data-testid="product-images-error">{{ err() }}</div>
+  }
+
+  <div class="imgmgr__upload">
+    <h4>Subir imagen</h4>
+    <label class="imgmgr__file">
+      Elegir archivo
+      <input
+        type="file"
+        accept="image/*"
+        hidden
+        (change)="onUploadPick($event)"
+        [attr.data-testid]="'product-image-file-' + productId()"
+      />
+    </label>
+    @if (uploadPreview()) {
+      <div class="imgmgr__preview" data-testid="product-image-upload-preview">
+        <img [src]="uploadPreview()!" alt="Vista previa" />
+        <div class="imgmgr__preview-actions">
+          <button type="button" class="imgmgr__btn" (click)="submitUpload()" data-testid="product-image-upload-submit">
+            Subir
+          </button>
+          <button type="button" class="imgmgr__btn imgmgr__btn--ghost" (click)="cancelUploadPreview()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="imgmgr__list">
+    <h4>Imágenes actuales</h4>
+    <div class="imgmgr__grid">
+      @for (im of images(); track im.id) {
+        <div class="imgmgr__item" [attr.data-testid]="'product-image-item-' + im.id">
+          <img [src]="im.imageUrl" alt="" />
+          <div class="imgmgr__item-actions">
+            <label class="imgmgr__link">
+              Reemplazar
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                (change)="onReplacePick(im.id, $event)"
+                [attr.data-testid]="'product-image-replace-' + im.id"
+              />
+            </label>
+            <button
+              type="button"
+              class="imgmgr__link imgmgr__link--danger"
+              (click)="deleteImage(im.id)"
+              [attr.data-testid]="'product-image-delete-' + im.id"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,153 @@
+.dm {
+  max-width: 960px;
+}
+
+.dm__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.5rem;
+}
+
+.dm__lead {
+  margin: 0 0 1.25rem;
+  color: var(--cp-text-muted, #5c5c5c);
+  font-size: 0.95rem;
+}
+
+.dm__err {
+  color: #b91c1c;
+  margin: 0 0 1rem;
+}
+
+.dm__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dm__field {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+  min-width: 200px;
+}
+
+.dm__select,
+.dm__input {
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.dm__input--num {
+  max-width: 140px;
+}
+
+.dm__section {
+  margin-bottom: 2rem;
+}
+
+.dm__h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.75rem;
+}
+
+.dm__new {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.dm__inline {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.dm__btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  background: var(--cp-primary, #2563eb);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dm__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dm__btn--ghost {
+  background: rgba(0, 0, 0, 0.08);
+  color: inherit;
+}
+
+.dm__table-wrap {
+  overflow: auto;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.dm__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.dm__table th,
+.dm__table td {
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dm__table th {
+  background: rgba(0, 0, 0, 0.03);
+  font-weight: 700;
+}
+
+.dm__row {
+  cursor: pointer;
+}
+
+.dm__row:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.dm__row--active {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.dm__actions {
+  white-space: nowrap;
+}
+
+.dm__link {
+  border: none;
+  background: none;
+  color: var(--cp-primary, #2563eb);
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.dm__link--danger {
+  color: #b91c1c;
+}
+
+.dm__panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+}
+
+.dm__panel h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}

@@ -1,0 +1,105 @@
+<div class="categories" data-testid="categories-page">
+  <h1>Categorías</h1>
+  @if (err()) {
+    <div class="categories__error" data-testid="categories-error">{{ err() }}</div>
+  }
+
+  <section class="categories__panel categories__panel--compact" data-testid="categories-bulk-actions">
+    <h2>Acciones</h2>
+    <div class="categories__bulk">
+      <div class="categories__hint">
+        Seleccionadas: <strong>{{ selectedIds().size }}</strong>
+      </div>
+      <button
+        type="button"
+        class="categories__btn categories__btn--danger"
+        [disabled]="selectedIds().size === 0 || deletingSelected()"
+        (click)="deleteSelected()"
+        data-testid="categories-delete-selected"
+      >
+        Eliminar seleccionadas
+      </button>
+      <button
+        type="button"
+        class="categories__btn categories__btn--ghost"
+        [disabled]="selectedIds().size === 0 || deletingSelected()"
+        (click)="clearSelection()"
+      >
+        Limpiar selección
+      </button>
+    </div>
+  </section>
+
+  <div class="categories__grid">
+    <section class="categories__panel" data-testid="categories-create-root">
+      <h2>Nueva categoría raíz</h2>
+      <input
+        type="text"
+        [(ngModel)]="rootName"
+        placeholder="Nombre"
+        data-testid="categories-root-name"
+      />
+      <button type="button" class="categories__btn" (click)="createRoot()" data-testid="categories-root-submit">
+        Crear
+      </button>
+    </section>
+
+    <section class="categories__panel" [class.categories__panel--open]="showChildForm()" data-testid="categories-create-child">
+      <h2>Subcategoría</h2>
+      @if (showChildForm()) {
+        <p class="categories__hint">Padre: seleccionado desde el árbol (+ Sub)</p>
+      }
+      <select [(ngModel)]="childParentId" data-testid="categories-parent-select">
+        <option [ngValue]="null">— Elegir categoría padre —</option>
+        @for (o of flatParents(tree()); track o.id) {
+          <option [ngValue]="o.id">{{ o.label }}</option>
+        }
+      </select>
+      <input
+        type="text"
+        [(ngModel)]="childName"
+        placeholder="Nombre subcategoría"
+        data-testid="categories-child-name"
+      />
+      <button type="button" class="categories__btn" (click)="createChild()" data-testid="categories-child-submit">
+        Crear subcategoría
+      </button>
+    </section>
+  </div>
+
+  @if (editId) {
+    <section class="categories__panel categories__edit" data-testid="categories-edit-panel">
+      <h2>Editar categoría</h2>
+      <input type="text" [(ngModel)]="editName" data-testid="categories-edit-name" />
+      <input
+        type="text"
+        [(ngModel)]="editDesc"
+        placeholder="Descripción"
+        data-testid="categories-edit-desc"
+      />
+      <button type="button" class="categories__btn" (click)="saveEdit()" data-testid="categories-edit-save">
+        Guardar
+      </button>
+      <button type="button" class="categories__btn categories__btn--ghost" (click)="editId = null">
+        Cancelar
+      </button>
+    </section>
+  }
+
+  <div class="categories__tree-wrap" data-testid="categories-tree">
+    <h2>Árbol</h2>
+    <ul class="categories__tree-root">
+      @for (n of tree(); track n.id) {
+        <app-category-tree-node
+          [node]="n"
+          [selectedIds]="selectedIds()"
+          (editRequest)="onEdit($event)"
+          (deleteRequest)="onDelete($event)"
+          (addChildRequest)="onAddChild($event)"
+          (toggleVisibleRequest)="onToggleVisible($event)"
+          (toggleSelectedRequest)="onToggleSelected($event)"
+        />
+      }
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,146 @@
+.products h1 {
+  margin-top: 0;
+}
+
+.products__error {
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--cp-cream, #e8e0d5);
+  margin-bottom: 1rem;
+}
+
+.products__panel {
+  background: var(--cp-white, #f5f5f5);
+  padding: 1.25rem;
+  border-radius: 16px;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+
+  h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.05rem;
+  }
+}
+
+.products__panel--compact {
+  padding: 1rem 1.25rem;
+}
+
+.products__bulk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.products__sel-col {
+  width: 46px;
+}
+
+.products__form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.65rem;
+
+  textarea {
+    grid-column: 1 / -1;
+  }
+
+  input,
+  select,
+  textarea {
+    padding: 0.55rem 0.65rem;
+    border-radius: 10px;
+    border: 2px solid rgba(58, 58, 58, 0.12);
+    font-family: inherit;
+  }
+}
+
+.products__btn {
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--cp-primary, #f47c20), var(--cp-primary-dark, #d96a1a));
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+
+  &--ghost {
+    background: #ccc;
+    color: #333;
+  }
+
+  &--danger {
+    background: linear-gradient(135deg, #b11, #811);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.products__table-wrap {
+  overflow-x: auto;
+  background: var(--cp-white, #f5f5f5);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.products__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+
+  th,
+  td {
+    padding: 0.65rem 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid #eaeaea;
+  }
+
+  th {
+    background: var(--cp-cream, #e8e0d5);
+  }
+}
+
+.products__actions {
+  white-space: nowrap;
+}
+
+.products__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.products__pill {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.products__link {
+  margin-right: 0.4rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--cp-brown, #8b4a2b);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &--danger {
+    color: #a22;
+  }
+}
+
+.products__expand td {
+  background: #fafafa;
+  vertical-align: top;
+}

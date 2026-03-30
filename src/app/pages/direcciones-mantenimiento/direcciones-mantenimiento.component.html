@@ -1,0 +1,106 @@
+<div class="dm" data-testid="direcciones-mantenimiento">
+  <h1 class="dm__title">Direcciones y envío (GT)</h1>
+  <p class="dm__lead">
+    Zonas del catálogo tiendasgt-direcciones. El costo de envío en tienda se toma del costo de la zona. Los cambios aplican
+    cuando la integración está configurada.
+  </p>
+
+  @if (!dir.configured) {
+    <p class="dm__err">Configura <code>direccionesApiUrl</code> (y opcionalmente <code>direccionesAdminKey</code>) en environment.</p>
+  } @else {
+    @if (err()) {
+      <p class="dm__err">{{ err() }}</p>
+    }
+
+    <div class="dm__filters">
+      <label class="dm__field">
+        Departamento
+        <select [(ngModel)]="depId" (ngModelChange)="onDepChange()" class="dm__select" data-testid="dm-dep">
+          <option value="">—</option>
+          @for (d of departamentos(); track d.id) {
+            <option [value]="d.id">{{ d.nombre }}</option>
+          }
+        </select>
+      </label>
+      <label class="dm__field">
+        Municipio
+        <select
+          [(ngModel)]="munId"
+          (ngModelChange)="onMunChange()"
+          class="dm__select"
+          [disabled]="!depId"
+          data-testid="dm-mun"
+        >
+          <option value="">—</option>
+          @for (m of municipios(); track m.id) {
+            <option [value]="m.id">{{ m.nombre }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (munId) {
+      <section class="dm__section">
+        <h2 class="dm__h2">Zonas</h2>
+
+        <div class="dm__new">
+          <input type="text" [(ngModel)]="nuevaZonaNombre" placeholder="Nombre nueva zona" class="dm__input" />
+          <input
+            type="number"
+            [(ngModel)]="nuevaZonaCosto"
+            placeholder="Costo envío (Q) opcional"
+            class="dm__input dm__input--num"
+            step="0.01"
+          />
+          <label class="dm__inline">
+            <input type="checkbox" [(ngModel)]="nuevaZonaDisponible" />
+            Entrega
+          </label>
+          <button type="button" class="dm__btn" (click)="crearZona()" [disabled]="busy()">Agregar zona</button>
+        </div>
+
+        <div class="dm__table-wrap">
+          <table class="dm__table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Costo Q</th>
+                <th>Entrega</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (z of zonas(); track z.id) {
+                <tr [class.dm__row--active]="editZona?.id === z.id" class="dm__row">
+                  <td>{{ z.nombre }}</td>
+                  <td>{{ z.costo_envio ?? '—' }}</td>
+                  <td>{{ z.disponible_entrega ? 'Sí' : 'No' }}</td>
+                  <td class="dm__actions">
+                    <button type="button" class="dm__link" (click)="openEditZona(z)">Editar</button>
+                    <button type="button" class="dm__link dm__link--danger" (click)="eliminarZona(z)">Eliminar</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (editZona) {
+          <div class="dm__panel">
+            <h3>Editar zona</h3>
+            <div class="dm__new">
+              <input type="text" [(ngModel)]="editZonaNombre" class="dm__input" />
+              <input type="number" [(ngModel)]="editZonaCosto" class="dm__input dm__input--num" step="0.01" />
+              <label class="dm__inline">
+                <input type="checkbox" [(ngModel)]="editZonaDisponible" />
+                Entrega
+              </label>
+              <button type="button" class="dm__btn" (click)="guardarZona()" [disabled]="busy()">Guardar</button>
+              <button type="button" class="dm__btn dm__btn--ghost" (click)="editZona = null">Cerrar</button>
+            </div>
+          </div>
+        }
+      </section>
+    }
+  }
+</div>

@@ -1,0 +1,53 @@
+<div class="layout" data-testid="admin-layout">
+  <aside class="layout__sidebar" data-testid="admin-sidebar">
+    <div class="layout__brand">🐾 CrunchyPaws</div>
+    <nav class="layout__nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" data-testid="nav-dashboard"
+        >Dashboard</a
+      >
+      @if (isAdmin()) {
+        <a routerLink="/admin/users" routerLinkActive="active" data-testid="nav-users">Usuarios</a>
+      }
+      @if (isStaff()) {
+        <a routerLink="/admin/categories" routerLinkActive="active" data-testid="nav-categories"
+          >Categorías</a
+        >
+        <a routerLink="/admin/products" routerLinkActive="active" data-testid="nav-products"
+          >Productos</a
+        >
+        <a routerLink="/admin/direcciones-gt" routerLinkActive="active" data-testid="nav-direcciones-gt"
+          >Direcciones GT</a
+        >
+      }
+      @if (isOrdersStaff()) {
+        <div class="layout__sub">
+          <span class="layout__sub-title">Mantenimiento</span>
+          <a routerLink="/admin/mantenimiento/pedidos" routerLinkActive="active" data-testid="nav-pedidos"
+            >Pedidos</a
+          >
+          <a
+            routerLink="/admin/mantenimiento/pedidos/estados"
+            routerLinkActive="active"
+            data-testid="nav-pedidos-estados"
+            >Estados de pedido</a
+          >
+        </div>
+      }
+    </nav>
+  </aside>
+  <div class="layout__main">
+    <header class="layout__navbar" data-testid="admin-navbar">
+      <span class="layout__title">Panel administración</span>
+      <div class="layout__user">
+        <span data-testid="navbar-user-email">{{ auth.getUser()?.email }}</span>
+        <span class="layout__role">{{ auth.getUser()?.role }}</span>
+        <button type="button" class="layout__logout" (click)="auth.logout()" data-testid="nav-logout">
+          Salir
+        </button>
+      </div>
+    </header>
+    <div class="layout__content">
+      <router-outlet />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,144 @@
+<div class="pe" data-testid="pedidos-estados-admin">
+  <h1 class="pe__title">Estados de pedido</h1>
+  <p class="pe__lead">
+    Cada estado tiene texto para <strong>administración</strong> y para el <strong>cliente</strong> (seguimiento en la tienda). Las
+    acciones del listado de pedidos siguen las <strong>transiciones</strong> definidas aquí.
+  </p>
+
+  @if (err()) {
+    <p class="pe__err">{{ err() }}</p>
+  }
+
+  <section class="pe__section">
+    <h2 class="pe__h2">Estados</h2>
+    @if (busy() && !statuses().length) {
+      <p>Cargando…</p>
+    } @else {
+      <div class="pe__new">
+        <input class="pe__input" [(ngModel)]="newCode" placeholder="Código (ej. MI_ESTADO)" />
+        <input class="pe__input" [(ngModel)]="newLabelAdmin" placeholder="Etiqueta administrador" />
+        <input class="pe__input" [(ngModel)]="newLabelCustomer" placeholder="Etiqueta cliente" />
+        <input class="pe__input pe__input--num" type="number" [(ngModel)]="newSort" />
+        <select class="pe__select" [(ngModel)]="newPaymentFlow" title="Flujo de pago del estado">
+          @for (f of statusFlows; track f) {
+            <option [value]="f">{{ flowLabel(f) }}</option>
+          }
+        </select>
+        <button type="button" class="pe__btn" (click)="crearEstado()" [disabled]="busy()">Agregar estado</button>
+      </div>
+
+      <div class="pe__table-wrap">
+        <table class="pe__table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Admin</th>
+              <th>Cliente</th>
+              <th>Flujo</th>
+              <th>Ord.</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of statuses(); track s.id) {
+              <tr>
+                <td><code>{{ s.code }}</code></td>
+                <td>{{ s.labelAdmin }}</td>
+                <td>{{ s.labelCustomer }}</td>
+                <td>{{ s.paymentFlow ? flowLabel(s.paymentFlow) : '—' }}</td>
+                <td>{{ s.sortOrder }}</td>
+                <td>
+                  <button type="button" class="pe__link pe__link--danger" (click)="eliminarEstado(s)" [disabled]="busy()">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <section class="pe__section">
+    <h2 class="pe__h2">Transiciones (desde estado + acción → destino)</h2>
+    <p class="pe__hint">
+      Cada transición pertenece a un <strong>flujo</strong>: pago anticipado (transferencia/tarjeta) o contra entrega. El
+      pedido usa el flujo según su forma de pago.
+    </p>
+    <div class="pe__new">
+      <select class="pe__select" [(ngModel)]="trPaymentFlow" title="Flujo">
+        @for (f of transitionFlows; track f) {
+          <option [value]="f">{{ flowLabel(f) }}</option>
+        }
+      </select>
+      <select class="pe__select" [(ngModel)]="trFrom">
+        <option value="">Origen</option>
+        @for (s of statuses(); track s.id) {
+          <option [value]="s.id">{{ s.labelAdmin }} ({{ s.code }})</option>
+        }
+      </select>
+      <select class="pe__select" [(ngModel)]="trAction">
+        @for (a of actions; track a) {
+          <option [value]="a">{{ a }}</option>
+        }
+      </select>
+      <select class="pe__select" [(ngModel)]="trTo">
+        <option value="">Destino</option>
+        @for (s of statuses(); track s.id) {
+          <option [value]="s.id">{{ s.labelAdmin }} ({{ s.code }})</option>
+        }
+      </select>
+      <button type="button" class="pe__btn" (click)="crearTransicion()" [disabled]="busy()">Agregar transición</button>
+    </div>
+
+    <h3 class="pe__h3">Copiar transición existente a otro flujo</h3>
+    <div class="pe__new">
+      <select class="pe__select" [(ngModel)]="cloneSourceId">
+        <option value="">Transición a copiar</option>
+        @for (t of transitions(); track t.id) {
+          <option [value]="t.id">
+            [{{ flowLabel(t.paymentFlow) }}] {{ t.fromStatus.labelAdmin }} — {{ t.action }} → {{ t.toStatus.labelAdmin }}
+          </option>
+        }
+      </select>
+      <select class="pe__select" [(ngModel)]="cloneTargetFlow">
+        @for (f of transitionFlows; track f) {
+          <option [value]="f">Copiar a: {{ flowLabel(f) }}</option>
+        }
+      </select>
+      <button type="button" class="pe__btn pe__btn--secondary" (click)="clonarTransicion()" [disabled]="busy()">
+        Duplicar al flujo elegido
+      </button>
+    </div>
+
+    <div class="pe__table-wrap">
+      <table class="pe__table">
+        <thead>
+          <tr>
+            <th>Flujo</th>
+            <th>Desde</th>
+            <th>Acción</th>
+            <th>Hacia</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of transitions(); track t.id) {
+            <tr>
+              <td>{{ flowLabel(t.paymentFlow) }}</td>
+              <td>{{ t.fromStatus.labelAdmin }}</td>
+              <td>{{ t.action }}</td>
+              <td>{{ t.toStatus.labelAdmin }}</td>
+              <td>
+                <button type="button" class="pe__link pe__link--danger" (click)="eliminarTransicion(t)" [disabled]="busy()">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

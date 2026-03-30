@@ -1,0 +1,100 @@
+<div class="users" data-testid="users-page">
+  <h1>Usuarios</h1>
+  @if (err()) {
+    <div class="users__error" data-testid="users-error">{{ err() }}</div>
+  }
+
+  <section class="users__panel" data-testid="users-create-panel">
+    <h2>Nuevo usuario</h2>
+    <div class="users__form">
+      <input
+        type="email"
+        [(ngModel)]="newEmail"
+        placeholder="Correo"
+        data-testid="users-new-email"
+      />
+      <input
+        type="password"
+        [(ngModel)]="newPassword"
+        placeholder="Contraseña"
+        data-testid="users-new-password"
+      />
+      <input
+        type="text"
+        [(ngModel)]="newName"
+        placeholder="Nombre completo"
+        data-testid="users-new-name"
+      />
+      <select [(ngModel)]="newRole" data-testid="users-new-role">
+        @for (r of roles; track r) {
+          <option [value]="r">{{ r }}</option>
+        }
+      </select>
+      <button type="button" class="users__btn" (click)="create()" data-testid="users-create-btn">
+        Crear
+      </button>
+    </div>
+  </section>
+
+  @if (loading()) {
+    <p data-testid="users-loading">Cargando…</p>
+  } @else {
+    <div class="users__table-wrap">
+      <table class="users__table" data-testid="users-table">
+        <thead>
+          <tr>
+            <th>Correo</th>
+            <th>Nombre</th>
+            <th>Rol</th>
+            <th>Alias</th>
+            <th>Envío gratis</th>
+            <th>Verificado</th>
+            <th>Cambiar rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of users(); track u.id) {
+            <tr [attr.data-testid]="'user-row-' + u.id">
+              <td>{{ u.email }}</td>
+              <td>{{ u.fullName }}</td>
+              <td>{{ u.role }}</td>
+              <td>
+                <input
+                  type="text"
+                  [ngModel]="u.alias ?? ''"
+                  (blur)="changeAlias(u, $event.target.value)"
+                  placeholder="Sin alias"
+                  data-testid="user-alias-input"
+                />
+              </td>
+              <td>
+                <label>
+                  <input
+                    type="checkbox"
+                    [checked]="u.freeShipping"
+                    (change)="toggleFreeShipping(u, $event.target.checked)"
+                    data-testid="user-free-shipping-toggle"
+                  />
+                  {{ u.freeShipping ? 'Sí' : 'No' }}
+                </label>
+              </td>
+              <td>{{ u.isVerified ? 'Sí' : 'No' }}</td>
+              <td>
+                <select
+                  [ngModel]="u.role"
+                  (ngModelChange)="changeRole(u, $event)"
+                  [attr.data-testid]="'user-role-' + u.id"
+                >
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="SELLER">SELLER</option>
+                  <option value="COLLABORATOR">COLLABORATOR</option>
+                  <option value="CUSTOMER">CUSTOMER</option>
+                </select>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

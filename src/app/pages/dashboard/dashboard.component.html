@@ -1,0 +1,11 @@
+<div class="dashboard" data-testid="dashboard-page">
+  <h1 data-testid="dashboard-welcome">Bienvenido, {{ auth.getUser()?.fullName }}</h1>
+  <p class="dashboard__lead">Panel de administración CrunchyPaws.</p>
+  <div class="dashboard__card" data-testid="dashboard-user-card">
+    <h2>Tu sesión</h2>
+    <ul>
+      <li><strong>Correo:</strong> {{ auth.getUser()?.email }}</li>
+      <li><strong>Rol:</strong> {{ auth.getUser()?.role }}</li>
+    </ul>
+  </div>
+</div>

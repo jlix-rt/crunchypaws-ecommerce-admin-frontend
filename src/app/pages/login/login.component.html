@@ -1,0 +1,39 @@
+<div class="login" data-testid="login-page">
+  <div class="login__card">
+    <h1 data-testid="login-title">CrunchyPaws Admin</h1>
+    <p class="login__hint">Inicia sesión con tu cuenta de personal.</p>
+    @if (err()) {
+      <div class="login__error" role="alert" data-testid="login-error">{{ err() }}</div>
+    }
+    <form (ngSubmit)="submit()" novalidate>
+      <label class="login__label" for="login-email">Correo</label>
+      <input
+        id="login-email"
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        required
+        autocomplete="username"
+        data-testid="login-email"
+      />
+      <label class="login__label" for="login-password">Contraseña</label>
+      <input
+        id="login-password"
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        required
+        autocomplete="current-password"
+        data-testid="login-password"
+      />
+      <button
+        type="submit"
+        class="login__btn"
+        [disabled]="loading()"
+        data-testid="login-submit"
+      >
+        {{ loading() ? 'Entrando…' : 'Entrar' }}
+      </button>
+    </form>
+  </div>
+</div>

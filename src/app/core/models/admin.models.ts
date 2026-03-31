@@ -40,6 +40,7 @@ export interface ProductListItem {
   sku: string | null;
   imageUrl: string | null;
   isVisible: boolean;
+  isPopular: boolean;
   category: { id: string; name: string; slug: string };
   images: { id: string; imageUrl: string; sortOrder?: number }[];
 }

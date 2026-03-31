@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -40,13 +40,17 @@ export class DireccionesTiendasGtAdminService {
     return new HttpHeaders();
   }
 
-  getDepartamentos(): Observable<DepartamentoGt[]> {
-    return this.http.get<DepartamentoGt[]>(`${this.base()}/departamentos`);
+  getDepartamentos(opts?: { conZonas?: boolean }): Observable<DepartamentoGt[]> {
+    let params = new HttpParams();
+    if (opts?.conZonas) params = params.set('conZonas', 'true');
+    return this.http.get<DepartamentoGt[]>(`${this.base()}/departamentos`, { params });
   }
 
-  getMunicipios(departamentoId: string): Observable<MunicipioGt[]> {
+  getMunicipios(departamentoId: string, opts?: { conZonas?: boolean }): Observable<MunicipioGt[]> {
+    let params = new HttpParams().set('departamentoId', departamentoId);
+    if (opts?.conZonas) params = params.set('conZonas', 'true');
     return this.http.get<MunicipioGt[]>(`${this.base()}/municipios`, {
-      params: { departamentoId },
+      params,
     });
   }
 

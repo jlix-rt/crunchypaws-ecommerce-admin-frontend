@@ -27,6 +27,7 @@ export class ProductService {
     sku?: string | null;
     isVisible?: boolean;
     tracksStock?: boolean;
+    isPopular?: boolean;
   }): Observable<ProductListItem> {
     return this.http.post<ProductListItem>(this.api('/products'), body);
   }
@@ -43,6 +44,7 @@ export class ProductService {
       imageUrl: string | null;
       isVisible: boolean;
       tracksStock?: boolean;
+      isPopular?: boolean;
     }>,
   ): Observable<ProductListItem> {
     return this.http.patch<ProductListItem>(this.api(`/products/${id}`), body);

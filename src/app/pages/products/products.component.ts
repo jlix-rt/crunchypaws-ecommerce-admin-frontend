@@ -36,6 +36,7 @@ export class ProductsComponent implements OnInit {
   newSku = '';
   newIsVisible = true;
   newTracksStock = true;
+  newIsPopular = false;
 
   editId: string | null = null;
   editName = '';
@@ -46,6 +47,7 @@ export class ProductsComponent implements OnInit {
   editSku = '';
   editIsVisible = true;
   editTracksStock = true;
+  editIsPopular = false;
 
   ngOnInit(): void {
     this.loadProducts();
@@ -154,6 +156,7 @@ export class ProductsComponent implements OnInit {
         sku: this.newSku.trim() || null,
         isVisible: this.newIsVisible,
         tracksStock: this.newTracksStock,
+        isPopular: this.newIsPopular,
       })
       .subscribe({
         next: () => {
@@ -165,6 +168,7 @@ export class ProductsComponent implements OnInit {
           this.newSku = '';
           this.newIsVisible = true;
           this.newTracksStock = true;
+          this.newIsPopular = false;
           this.loadProducts();
         },
         error: (e) => this.err.set(e.error?.error ?? 'Error'),
@@ -181,6 +185,7 @@ export class ProductsComponent implements OnInit {
     this.editSku = p.sku ?? '';
     this.editIsVisible = p.isVisible ?? true;
     this.editTracksStock = p.tracksStock !== false;
+    this.editIsPopular = p.isPopular === true;
   }
 
   saveEdit(): void {
@@ -195,6 +200,7 @@ export class ProductsComponent implements OnInit {
         sku: this.editSku.trim() || null,
         isVisible: this.editIsVisible,
         tracksStock: this.editTracksStock,
+        isPopular: this.editIsPopular,
       })
       .subscribe({
         next: () => {
@@ -215,6 +221,13 @@ export class ProductsComponent implements OnInit {
   toggleTracksStock(p: ProductListItem): void {
     const current = p.tracksStock !== false;
     this.productService.update(p.id, { tracksStock: !current }).subscribe({
+      next: () => this.loadProducts(),
+      error: (e) => this.err.set(e.error?.error ?? 'Error'),
+    });
+  }
+
+  togglePopular(p: ProductListItem): void {
+    this.productService.update(p.id, { isPopular: !p.isPopular }).subscribe({
       next: () => this.loadProducts(),
       error: (e) => this.err.set(e.error?.error ?? 'Error'),
     });

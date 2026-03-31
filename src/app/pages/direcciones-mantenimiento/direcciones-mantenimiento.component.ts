@@ -20,6 +20,7 @@ export class DireccionesMantenimientoComponent implements OnInit {
 
   err = signal<string | null>(null);
   busy = signal(false);
+  soloConZonas = signal(true);
 
   departamentos = signal<DepartamentoGt[]>([]);
   municipios = signal<MunicipioGt[]>([]);
@@ -42,7 +43,11 @@ export class DireccionesMantenimientoComponent implements OnInit {
       this.err.set('Configura `direccionesApiUrl` en environment (API tiendasgt-direcciones).');
       return;
     }
-    this.dir.getDepartamentos().subscribe({
+    this.loadDepartamentos();
+  }
+
+  private loadDepartamentos(): void {
+    this.dir.getDepartamentos({ conZonas: this.soloConZonas() }).subscribe({
       next: (d) => this.departamentos.set(d),
       error: () => this.err.set('No se pudieron cargar departamentos.'),
     });
@@ -54,10 +59,23 @@ export class DireccionesMantenimientoComponent implements OnInit {
     this.munId = '';
     this.err.set(null);
     if (!this.depId) return;
-    this.dir.getMunicipios(this.depId).subscribe({
+    this.dir.getMunicipios(this.depId, { conZonas: this.soloConZonas() }).subscribe({
       next: (m) => this.municipios.set(m),
       error: () => this.err.set('No se pudieron cargar municipios.'),
     });
+  }
+
+  onFiltroConZonasChange(): void {
+    const actualDepId = this.depId;
+    this.err.set(null);
+    this.depId = '';
+    this.munId = '';
+    this.zonas.set([]);
+    this.municipios.set([]);
+    this.loadDepartamentos();
+    if (!actualDepId) return;
+    this.depId = actualDepId;
+    this.onDepChange();
   }
 
   onMunChange(): void {

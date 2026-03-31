@@ -59,6 +59,10 @@
         <input type="checkbox" [(ngModel)]="newIsVisible" />
         Visible en tienda
       </label>
+      <label class="products__check">
+        <input type="checkbox" [(ngModel)]="newIsPopular" />
+        Popular (home)
+      </label>
       <select [(ngModel)]="newCategoryId" data-testid="products-new-category">
         <option value="">— Categoría —</option>
         @for (c of flatCats(tree()); track c.id) {
@@ -94,6 +98,10 @@
           <input type="checkbox" [(ngModel)]="editIsVisible" />
           Visible en tienda
         </label>
+        <label class="products__check">
+          <input type="checkbox" [(ngModel)]="editIsPopular" />
+          Popular (home)
+        </label>
         <select [(ngModel)]="editCategoryId" data-testid="products-edit-category">
           @for (c of flatCats(tree()); track c.id) {
             <option [value]="c.id">{{ c.label }}</option>
@@ -127,6 +135,7 @@
           <th>Stock</th>
           <th>Inventario</th>
           <th>Visible</th>
+          <th>Popular</th>
           <th></th>
         </tr>
       </thead>
@@ -161,6 +170,11 @@
                 {{ p.isVisible ? 'Sí' : 'No' }}
               </button>
             </td>
+            <td>
+              <button type="button" class="products__pill" (click)="togglePopular(p)">
+                {{ p.isPopular ? 'Sí' : 'No' }}
+              </button>
+            </td>
             <td class="products__actions">
               <button
                 type="button"
@@ -190,7 +204,7 @@
           </tr>
           @if (expandedId() === p.id) {
             <tr class="products__expand">
-              <td colspan="8">
+              <td colspan="9">
                 <app-product-image-manager
                   [productId]="p.id"
                   [images]="p.images || []"

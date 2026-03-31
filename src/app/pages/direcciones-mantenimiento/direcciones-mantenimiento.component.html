@@ -13,6 +13,10 @@
     }
 
     <div class="dm__filters">
+      <label class="dm__inline dm__inline--toggle">
+        <input type="checkbox" [ngModel]="soloConZonas()" (ngModelChange)="soloConZonas.set($event); onFiltroConZonasChange()" />
+        Mostrar solo departamentos/municipios con zonas
+      </label>
       <label class="dm__field">
         Departamento
         <select [(ngModel)]="depId" (ngModelChange)="onDepChange()" class="dm__select" data-testid="dm-dep">

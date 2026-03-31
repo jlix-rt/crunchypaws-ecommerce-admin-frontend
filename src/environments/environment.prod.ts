@@ -10,5 +10,5 @@ export const environment = {
   direccionesApiUrl: '/api/direcciones',
   direccionesAdminKey: 'F6e3kgCPSjCzoCUbm2M942UQ4nBqTxM=',
   /** Misma raíz pública HTTPS desde la que sirves el admin (para alinear con el enlace del correo de verificación). */
-  publicAppUrl: 'https://admin.crunchypaws.tiendasgt.com',
+  publicAppUrl: 'https://crunchypaws-admin.tiendasgt.com',
 };
